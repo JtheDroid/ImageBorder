@@ -2,8 +2,7 @@ package de.jb.imageborder;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.*;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -55,7 +54,7 @@ public class EditActivity extends AppCompatActivity {
 
     public void saveImage(View v) {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.setType("image/png");
+        intent.setType("image/jpeg");
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
@@ -63,7 +62,7 @@ public class EditActivity extends AppCompatActivity {
         if (uri == null) {
             Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show();
         } else try (OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
-            getEditedBitmap().compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            getEditedBitmap().compress(Bitmap.CompressFormat.JPEG, 95, outputStream);
             Toast.makeText(this, "Saved: " + uri.getLastPathSegment(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
