@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,7 @@ import java.io.OutputStream;
 public class EditActivity extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
     private ImageView imageView;
+    private SeekBar seekBar;
     private Bitmap originalBitmap;
 
     @Override
@@ -25,6 +27,21 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         imageView = findViewById(R.id.imageView);
+        seekBar = findViewById(R.id.seekBar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateImageView();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
         Intent intent = getIntent();
         if (intent == null) finish();
         else {
@@ -39,6 +56,7 @@ public class EditActivity extends AppCompatActivity {
                     InputStream inputStream = getContentResolver().openInputStream(uri);
                     originalBitmap = BitmapFactory.decodeStream(inputStream);
                     imageView.setImageBitmap(getEditedBitmap());
+                    seekBar.setMax(originalBitmap.getWidth() / 2);
                 } catch (FileNotFoundException e) {
                     finish();
                 }
@@ -46,9 +64,18 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
+    private void updateImageView() {
+        imageView.setImageBitmap(getEditedBitmap());
+    }
+
     private Bitmap getEditedBitmap() {
         Bitmap editedBitmap = originalBitmap.copy(originalBitmap.getConfig(), true);
-        //...
+        int pixels = seekBar.getProgress();
+        Canvas canvas = new Canvas(editedBitmap);
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(0, 0, pixels, editedBitmap.getHeight(), paint);
+        canvas.drawRect(editedBitmap.getWidth() - pixels, 0, editedBitmap.getWidth(), editedBitmap.getHeight(), paint);
         return editedBitmap;
     }
 
