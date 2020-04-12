@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ImageBorder</string>
+    <string name="open_image">Open Image</string>
+    <string name="save_image">Save Image</string>
+</resources>
