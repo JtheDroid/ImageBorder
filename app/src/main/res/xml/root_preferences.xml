@@ -1,0 +1,70 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/color">
+        <SeekBarPreference
+            android:max="255"
+            app:defaultValue="255"
+            app:key="colorR"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/red" />
+        <SeekBarPreference
+            android:max="255"
+            app:defaultValue="255"
+            app:key="colorG"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/green" />
+        <SeekBarPreference
+            android:max="255"
+            app:defaultValue="255"
+            app:key="colorB"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/blue" />
+        <SeekBarPreference
+            android:max="255"
+            app:defaultValue="255"
+            app:key="colorA"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/alpha" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/borders">
+        <CheckBoxPreference
+            app:defaultValue="true"
+            app:key="left"
+            app:title="@string/left" />
+        <CheckBoxPreference
+            app:defaultValue="true"
+            app:key="right"
+            app:title="@string/right" />
+        <CheckBoxPreference
+            app:defaultValue="false"
+            app:key="top"
+            app:title="@string/top" />
+        <CheckBoxPreference
+            app:defaultValue="false"
+            app:key="bottom"
+            app:title="@string/bottom" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/image">
+        <ListPreference
+            android:entries="@array/filetypes"
+            android:entryValues="@array/filetypes"
+            app:defaultValue="JPEG"
+            app:key="filetype"
+            app:title="@string/filetype"
+            app:useSimpleSummaryProvider="true" />
+        <SeekBarPreference
+            android:max="100"
+            app:defaultValue="95"
+            app:key="quality"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/quality" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

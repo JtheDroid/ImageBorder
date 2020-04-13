@@ -2,4 +2,20 @@
     <string name="app_name">ImageBorder</string>
     <string name="open_image">Open Image</string>
     <string name="save_image">Save Image</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preferences -->
+    <string name="color">Color</string>
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="blue">Blue</string>
+    <string name="alpha">Alpha</string>
+    <string name="borders">Borders</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="top">Top</string>
+    <string name="bottom">Bottom</string>
+    <string name="image">Image</string>
+    <string name="filetype">File Type</string>
+    <string name="quality">Quality</string>
 </resources>

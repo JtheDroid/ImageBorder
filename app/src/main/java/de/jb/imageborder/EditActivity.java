@@ -2,14 +2,21 @@ package de.jb.imageborder;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.*;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,11 +28,13 @@ public class EditActivity extends AppCompatActivity {
     private ImageView imageView;
     private SeekBar seekBar;
     private Bitmap originalBitmap;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         imageView = findViewById(R.id.imageView);
         seekBar = findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -66,6 +75,10 @@ public class EditActivity extends AppCompatActivity {
 
     private void updateImageView() {
         imageView.setImageBitmap(getEditedBitmap());
+    }
+
+    public void openSettings(View v) {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     private Bitmap getEditedBitmap() {

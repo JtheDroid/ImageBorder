@@ -1,0 +1,6 @@
+<resources>
+    <string-array name="filetypes">
+        <item>JPEG</item>
+        <item>PNG</item>
+    </string-array>
+</resources>
