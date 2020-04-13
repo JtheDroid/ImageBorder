@@ -2,7 +2,6 @@ package de.jb.imageborder;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -19,10 +18,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openImage(View v) {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        startActivityForResult(intent, READ_REQUEST_CODE);
+        startActivityForResult(
+                new Intent(Intent.ACTION_OPEN_DOCUMENT)
+                        .addCategory(Intent.CATEGORY_OPENABLE)
+                        .setType("image/*"),
+                READ_REQUEST_CODE);
     }
 
     public void openSettings(View v) {
@@ -30,16 +30,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode,
-                                 Intent resultData) {
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            if (resultData != null) {
-                Uri uri = resultData.getData();
-                Intent sendIntent = new Intent(this, EditActivity.class);
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.setDataAndType(uri, "image/*");
-                startActivity(sendIntent);
-            }
-        }
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK && resultData != null)
+            startActivity(new Intent(this, EditActivity.class)
+                    .setAction(Intent.ACTION_SEND)
+                    .setDataAndType(resultData.getData(), "image/*"));
     }
 }

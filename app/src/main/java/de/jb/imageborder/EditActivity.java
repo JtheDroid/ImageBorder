@@ -21,7 +21,6 @@ import androidx.preference.PreferenceManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 public class EditActivity extends AppCompatActivity {
@@ -58,16 +57,14 @@ public class EditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent == null) finish();
         else {
-            Uri uri =
-                    (intent.getClipData() != null && intent.getClipData().getItemCount() > 0)
-                            ? intent.getClipData().getItemAt(0).getUri()
-                            : intent.getData();
+            Uri uri = intent.getClipData() != null && intent.getClipData().getItemCount() > 0
+                    ? intent.getClipData().getItemAt(0).getUri()
+                    : intent.getData();
             if (uri == null)
                 finish();
             else {
                 try {
-                    InputStream inputStream = getContentResolver().openInputStream(uri);
-                    originalBitmap = BitmapFactory.decodeStream(inputStream);
+                    originalBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
                     width = originalBitmap.getWidth();
                     height = originalBitmap.getHeight();
                     size = width;
@@ -95,11 +92,11 @@ public class EditActivity extends AppCompatActivity {
         int pixels = seekBar.getProgress();
         Canvas canvas = new Canvas(editedBitmap);
         Paint paint = new Paint();
-        paint.setColor(
-                Color.argb(sharedPreferences.getInt("colorA", 255),
-                        sharedPreferences.getInt("colorR", 255),
-                        sharedPreferences.getInt("colorG", 255),
-                        sharedPreferences.getInt("colorB", 255)));
+        paint.setColor(Color.argb(
+                sharedPreferences.getInt("colorA", 255),
+                sharedPreferences.getInt("colorR", 255),
+                sharedPreferences.getInt("colorG", 255),
+                sharedPreferences.getInt("colorB", 255)));
         if (sharedPreferences.getBoolean("left", true))
             canvas.drawRect(0, 0, pixels, height, paint);
         if (sharedPreferences.getBoolean("right", true))
@@ -112,9 +109,11 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void saveImage(View v) {
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.setType(sharedPreferences.getString("filetype", "JPEG").equals("JPEG") ? "image/jpeg" : "image/png");
-        startActivityForResult(intent, READ_REQUEST_CODE);
+        startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT)
+                        .setType(sharedPreferences.getString("filetype", "JPEG").equals("JPEG")
+                                ? "image/jpeg"
+                                : "image/png"),
+                READ_REQUEST_CODE);
     }
 
     private void saveImage(Uri uri) {
@@ -130,13 +129,10 @@ public class EditActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode,
-                                 Intent resultData) {
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            if (resultData != null) {
-                Uri uri = resultData.getData();
-                saveImage(uri);
-            }
-        }
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == READ_REQUEST_CODE
+                && resultCode == Activity.RESULT_OK
+                && resultData != null)
+            saveImage(resultData.getData());
     }
 }
