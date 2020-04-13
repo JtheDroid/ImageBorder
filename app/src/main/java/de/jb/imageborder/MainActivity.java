@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
         startActivityForResult(intent, READ_REQUEST_CODE);
+    }
+
+    public void openSettings(View v) {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     @Override

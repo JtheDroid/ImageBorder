@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +26,9 @@ import java.io.OutputStream;
 
 public class EditActivity extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
+    int width, height, size, max;
     private ImageView imageView;
+    private TextView textViewValue;
     private SeekBar seekBar;
     private Bitmap originalBitmap;
     private SharedPreferences sharedPreferences;
@@ -36,11 +39,12 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         imageView = findViewById(R.id.imageView);
-        seekBar = findViewById(R.id.seekBar);
+        textViewValue = findViewById(R.id.textViewValue);
+        seekBar = findViewById(R.id.seekBarValue);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                updateImageView();
+                update();
             }
 
             @Override
@@ -64,8 +68,12 @@ public class EditActivity extends AppCompatActivity {
                 try {
                     InputStream inputStream = getContentResolver().openInputStream(uri);
                     originalBitmap = BitmapFactory.decodeStream(inputStream);
+                    width = originalBitmap.getWidth();
+                    height = originalBitmap.getHeight();
+                    size = width;
+                    max = size / 2;
                     imageView.setImageBitmap(getEditedBitmap());
-                    seekBar.setMax(originalBitmap.getWidth() / 2);
+                    seekBar.setMax(max);
                 } catch (FileNotFoundException e) {
                     finish();
                 }
@@ -73,8 +81,9 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
-    private void updateImageView() {
+    private void update() {
         imageView.setImageBitmap(getEditedBitmap());
+        textViewValue.setText(seekBar.getProgress() + " px, " + Math.round(seekBar.getProgress() * 100.0 / size) + "% width");
     }
 
     public void openSettings(View v) {
@@ -86,15 +95,25 @@ public class EditActivity extends AppCompatActivity {
         int pixels = seekBar.getProgress();
         Canvas canvas = new Canvas(editedBitmap);
         Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(0, 0, pixels, editedBitmap.getHeight(), paint);
-        canvas.drawRect(editedBitmap.getWidth() - pixels, 0, editedBitmap.getWidth(), editedBitmap.getHeight(), paint);
+        paint.setColor(
+                Color.argb(sharedPreferences.getInt("colorA", 255),
+                        sharedPreferences.getInt("colorR", 255),
+                        sharedPreferences.getInt("colorG", 255),
+                        sharedPreferences.getInt("colorB", 255)));
+        if (sharedPreferences.getBoolean("left", true))
+            canvas.drawRect(0, 0, pixels, height, paint);
+        if (sharedPreferences.getBoolean("right", true))
+            canvas.drawRect(width - pixels, 0, width, height, paint);
+        if (sharedPreferences.getBoolean("top", true))
+            canvas.drawRect(0, 0, width, pixels, paint);
+        if (sharedPreferences.getBoolean("bottom", true))
+            canvas.drawRect(0, height - pixels, width, height, paint);
         return editedBitmap;
     }
 
     public void saveImage(View v) {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.setType("image/jpeg");
+        intent.setType(sharedPreferences.getString("filetype", "JPEG").equals("JPEG") ? "image/jpeg" : "image/png");
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
@@ -102,7 +121,8 @@ public class EditActivity extends AppCompatActivity {
         if (uri == null) {
             Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show();
         } else try (OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
-            getEditedBitmap().compress(Bitmap.CompressFormat.JPEG, 95, outputStream);
+            Bitmap.CompressFormat compressFormat = sharedPreferences.getString("filetype", "JPEG").equals("JPEG") ? Bitmap.CompressFormat.JPEG : Bitmap.CompressFormat.PNG;
+            getEditedBitmap().compress(compressFormat, sharedPreferences.getInt("quality", 95), outputStream);
             Toast.makeText(this, "Saved: " + uri.getLastPathSegment(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
