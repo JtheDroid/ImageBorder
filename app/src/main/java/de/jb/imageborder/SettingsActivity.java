@@ -1,6 +1,7 @@
 package de.jb.imageborder;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        ((TextView) findViewById(R.id.textViewVersion)).setText("v" + BuildConfig.VERSION_NAME);
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
