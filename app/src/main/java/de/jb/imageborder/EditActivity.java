@@ -3,11 +3,7 @@ package de.jb.imageborder;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -15,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -101,9 +96,9 @@ public class EditActivity extends AppCompatActivity {
             canvas.drawRect(0, 0, pixels, height, paint);
         if (sharedPreferences.getBoolean("right", true))
             canvas.drawRect(width - pixels, 0, width, height, paint);
-        if (sharedPreferences.getBoolean("top", true))
+        if (sharedPreferences.getBoolean("top", false))
             canvas.drawRect(0, 0, width, pixels, paint);
-        if (sharedPreferences.getBoolean("bottom", true))
+        if (sharedPreferences.getBoolean("bottom", false))
             canvas.drawRect(0, height - pixels, width, height, paint);
         return editedBitmap;
     }
