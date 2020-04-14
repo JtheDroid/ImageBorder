@@ -3,7 +3,11 @@ package de.jb.imageborder;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -64,13 +69,19 @@ public class EditActivity extends AppCompatActivity {
                     height = originalBitmap.getHeight();
                     size = width;
                     max = size / 2;
-                    imageView.setImageBitmap(getEditedBitmap());
                     seekBar.setMax(max);
+                    update();
                 } catch (FileNotFoundException e) {
                     finish();
                 }
             }
         }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        update();
     }
 
     private void update() {
